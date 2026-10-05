@@ -1,13 +1,10 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
-
 import json
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 DATA_FILE = os.path.join("data", "projects.json")
 
@@ -21,13 +18,18 @@ def load_projects():
 
 
 def save_projects(projects):
+    os.makedirs("data", exist_ok=True)
+
     with open(DATA_FILE, "w") as file:
         json.dump(projects, file, indent=4)
 
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return jsonify({
+        "success": True,
+        "message": "Backend API is running"
+    })
 
 
 @app.route("/api/projects", methods=["GET"])
